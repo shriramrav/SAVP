@@ -1,0 +1,64 @@
+import  Grid  from './components/grid.js';
+import BFS from './algorithms/BFS.js';
+import A_Star from './algorithms/a-star.js';
+
+
+let grid = new Grid({ X: 64, Y: 33 }, document.getElementById('Canvas'));
+
+function init() {
+    const nodeSize = 30;
+    grid.draw(nodeSize);
+}
+
+function run() {
+    // BFS.search(grid);
+    A_Star.search(grid);
+}
+
+window.init = init;
+window.run = run;
+
+function mousePos(canvas, event) {
+    let rect = canvas.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+    return { X: x, Y: y };
+}
+
+function getNode(Point) {
+    return { X: Math.floor(Point.X / grid.nodeSize), Y: Math.floor(Point.Y / grid.nodeSize) };
+}
+
+let mouseHold = false; let mouseCtr = 0;
+
+document.querySelector("canvas").addEventListener("mousedown", function (e) {
+    let nodeLoc = getNode(mousePos(document.querySelector("canvas"), e));
+    if (grid.nodes[nodeLoc.X][nodeLoc.Y].isEnabled()) {
+        if (mouseCtr == 0) {
+            grid.setStart(nodeLoc.X, nodeLoc.Y);
+            grid.drawNode(nodeLoc.X * grid.nodeSize, nodeLoc.Y * grid.nodeSize, 'blue');
+        } else if (mouseCtr == 1) {
+            grid.setEnd(nodeLoc.X, nodeLoc.Y);
+            grid.drawNode(nodeLoc.X * grid.nodeSize, nodeLoc.Y * grid.nodeSize, 'green');
+        } else {
+            grid.nodes[nodeLoc.X][nodeLoc.Y].setEnabled(false);
+            grid.drawNode(nodeLoc.X * grid.nodeSize, nodeLoc.Y * grid.nodeSize, 'red');
+        }
+    }
+    mouseCtr++;
+    mouseHold = true;
+});
+
+document.querySelector("canvas").addEventListener("mouseup", function (e) {
+    mouseHold = false;
+});
+
+document.querySelector("canvas").addEventListener("mousemove", function (e) {
+    if (mouseHold) {
+        let nodeLoc = getNode(mousePos(document.querySelector("canvas"), e));
+        if (grid.nodes[nodeLoc.X][nodeLoc.Y].isEnabled()) {
+            grid.nodes[nodeLoc.X][nodeLoc.Y].setEnabled(false);
+            grid.drawNode(nodeLoc.X * grid.nodeSize, nodeLoc.Y * grid.nodeSize, 'red');
+        }
+    }
+});
