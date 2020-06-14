@@ -12,6 +12,7 @@ function init() {
 
 function run() {
     // BFS.search(grid);
+    
     A_Star.search(grid);
 }
 
