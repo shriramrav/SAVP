@@ -5,7 +5,7 @@ export default class Stack {
         this.items = [];
     }
 
-    add(item) {
+    push(item) {
         this.items.push(item);
     }
 

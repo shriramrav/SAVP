@@ -23,15 +23,16 @@ export default class BFS {
                 let y = temp.Y + adjY[i];
         
                 if (!this.isValid(grid.nodes.length, grid.nodes[0].length, x, y)) {
-                    if ((grid.nodes[x][y].isEnabled()) ||  (grid.nodes[x][y].isEnd())){
-                        if (!grid.nodes[x][y].isVisited()) {
-                            visited.push({ X: x, Y: y });
-                            grid.nodes[x][y].setVisited(true, temp);
-                            if (grid.nodes[x][y].isEnd()) {
+                    let pos = { X: x, Y: y };
+                    if ((grid.getNode(pos).isEnabled()) ||  (grid.getNode(pos).isEnd())){
+                        if (!grid.getNode(pos).isVisited()) {
+                            visited.push(pos);
+                            grid.getNode(pos).setVisited(true, temp);
+                            if (grid.getNode(pos).isEnd()) {
                                 checkEnd = true;
                                 break;
                             }
-                            queue.add({ X: x, Y: y });
+                            queue.add(pos);
                         }
                     }
                 }
@@ -40,40 +41,7 @@ export default class BFS {
                 searched.push(visited);
             }
         }
-
-        let end = grid.getEndPos();
-
-        (function drawVisited(i) {
-            setTimeout(function () {
-                let loop = (i, color) => {
-                    for (let j = 0; j < searched[i].length; j++) {
-                        if (grid.nodes[searched[i][j].X][searched[i][j].Y].isEnabled()) {
-                            console.log(searched[i].length);
-                            grid.drawNode(searched[i][j].X * grid.nodeSize, searched[i][j].Y * grid.nodeSize, color);
-                        }
-                    }
-                };
-                if (i > 0) {
-                    loop(i - 1, 'purple');
-                }
-                loop(i, 'rgb(0, 181, 132)');
-                if (i != searched.length - 1) {
-                    drawVisited(++i);
-                } else {
-                    drawPath(grid.nodes[end.X][end.Y].prev());
-                }
-            }, 10);
-        })(0);
-
-        function drawPath(node) {
-            setTimeout(function () {
-                grid.drawNode(node.X * grid.nodeSize, node.Y * grid.nodeSize, 'rgb(230,230,250)');
-                let temp = grid.nodes[node.X][node.Y].prev();
-                if (!grid.nodes[temp.X][temp.Y].isStart()) {
-                    drawPath(temp);
-                }
-            }, 50);
-        }
+        grid.animate(searched.flat());
     }
 
     static isValid(X_max, Y_max, x, y) {

@@ -1,6 +1,9 @@
 import Node from './node.js';
+import Animation from './animate.js';
+
 
 export default class Grid {
+
     ctx;
     nodes;
     nodeSize;
@@ -16,39 +19,60 @@ export default class Grid {
                 this.nodes[i][j] = new Node();
             }
         }
+        this.setFont("30px Arial");
     }
 
     draw(nodeSize) {
         this.nodeSize = nodeSize;
-        console.log(nodeSize);
         this.ctx.shadowColor = "black";
         this.ctx.shadowBlur = 2;
         for (let i = 0; i < this.nodes.length; i++) {
             for (let j = 0; j < this.nodes[0].length; j++) {
-                this.drawNode(i * nodeSize, j * nodeSize, 'white');
+                this.drawNode({ X: i, Y: j }, 'white');
             }
         }
         this.ctx.shadowBlur = 0;
     }
 
-    drawNode(X, Y, color) {
+    drawNode = (pos, color) => {
         this.ctx.fillStyle = color;
         this.ctx.fillRect(
-            X,
-            Y,
+            pos.X * this.nodeSize,
+            pos.Y * this.nodeSize,
             this.nodeSize - 1,
             this.nodeSize - 1
         );
     }
 
-    setStart(x, y) {
-        this.nodes[x][y].setStart(true);
-        this.startPos = { X: x, Y: y };
+    write(str, color, nodeLoc) {
+        this.ctx.fillStyle = color;
+        this.ctx.fillText(str, (nodeLoc.X * this.nodeSize) + 5, (nodeLoc.Y * this.nodeSize) + 25);
     }
 
-    setEnd(x, y) {
-        this.nodes[x][y].setEnd(true);
-        this.endPos = { X: x, Y: y };
+    setFont(str) {
+        this.ctx.font = str;
+    }
+
+    setStart(pos) {
+        this.getNode(pos).setStart(true);
+        this.startPos = pos;
+    }
+
+    setEnd(pos) {
+        this.getNode(pos).setEnd(true);
+        this.endPos = pos;
+    }
+
+    getStartNode() {
+        return this.getNode(this.getStartPos());
+    }
+
+    getNode(pos) {
+        return this.nodes[pos.X][pos.Y];
+    }
+    
+    getEndNode = () => {
+        return this.getNode(this.getEndPos());
     }
 
     getStartPos() {
@@ -59,6 +83,13 @@ export default class Grid {
         return this.endPos;
     }
 
+    animate(visited) {
+        Animation.anim(this, visited);
+    } 
+
+    getDims() {
+        return { X: this.nodes.length, Y: this.nodes[0].length };
+    }
 }
 
 

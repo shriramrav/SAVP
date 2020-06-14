@@ -5,6 +5,7 @@ export default class Node {
         this.enabled = true;
         this.visited = false;
         this.prevNode = null;
+        // this.dist_traveled = Infinity;
     }
     
     isStart() {
@@ -44,6 +45,14 @@ export default class Node {
 
     prev() {
         return this.prevNode;
+    }
+
+    setPrev(pos) {
+        this.prevNode = pos;
+    }
+
+    close() {
+        this.visited = true;
     }
 
     chkT(t) {
