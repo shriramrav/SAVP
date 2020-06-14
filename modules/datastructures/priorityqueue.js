@@ -22,6 +22,7 @@ export default class PriorityQueue {
             this.list.push(val);
             this.items.push(item);
         }
+        console.log('adeed');
     }
 
     peek() {
@@ -45,21 +46,32 @@ export default class PriorityQueue {
         return (this.list.length == 0) ? true : false;
     }
 
-    print() {
-        console.log(this.items);
-        console.log(this.list);
-        console.log("finsihed");
+    contains(item) {
+        for (let i = 0; i < this.list.length; i++) {
+            if (this.isEqual(this.items[i], item)) {
+                return true;
+            }
+        }
+        return false;
+    } 
+
+
+    isEqual(key1, key2) {
+        // console.log("testing:" + (JSON.stringify(key1) === JSON.stringify(key2)));
+        return (JSON.stringify(key1) === JSON.stringify(key2)) ? true : false;
     }
 
-    insert(pos, list, val) {
-        let temp = [];
-        for (let i = 0; i < list.length; i++) {
-            if (i == pos) {
-                temp.push(val);
+
+    remove(item) {
+        for (let i = 0; i < this.list.length; i++) {
+            console.log('removed looping');
+            if (this.isEqual(this.items[i], item)) {
+                this.items.splice(i, 1);
+                this.list.splice(i, 1);
+                console.log('remopved');
+                break;
             }
-            temp.push(list[i]);
         }
-        return temp;
     }
 }
 

@@ -33,16 +33,20 @@ let mouseHold = false; let mouseCtr = 0;
 
 document.querySelector("canvas").addEventListener("mousedown", function (e) {
     let nodeLoc = getNode(mousePos(document.querySelector("canvas"), e));
-    if (grid.nodes[nodeLoc.X][nodeLoc.Y].isEnabled()) {
+
+    if (grid.getNode(nodeLoc).isEnabled()) {
         if (mouseCtr == 0) {
-            grid.setStart(nodeLoc.X, nodeLoc.Y);
-            grid.drawNode(nodeLoc.X * grid.nodeSize, nodeLoc.Y * grid.nodeSize, 'blue');
+            grid.setStart(nodeLoc);
+            grid.drawNode(nodeLoc, 'black');
+            grid.write("S", 'white', nodeLoc);
+
         } else if (mouseCtr == 1) {
-            grid.setEnd(nodeLoc.X, nodeLoc.Y);
-            grid.drawNode(nodeLoc.X * grid.nodeSize, nodeLoc.Y * grid.nodeSize, 'green');
+            grid.setEnd(nodeLoc);
+            grid.drawNode(nodeLoc, 'black');
+            grid.write("E", 'white', nodeLoc);
         } else {
-            grid.nodes[nodeLoc.X][nodeLoc.Y].setEnabled(false);
-            grid.drawNode(nodeLoc.X * grid.nodeSize, nodeLoc.Y * grid.nodeSize, 'red');
+            grid.getNode(nodeLoc).setEnabled(false);
+            grid.drawNode(nodeLoc, 'red');
         }
     }
     mouseCtr++;
@@ -56,9 +60,9 @@ document.querySelector("canvas").addEventListener("mouseup", function (e) {
 document.querySelector("canvas").addEventListener("mousemove", function (e) {
     if (mouseHold) {
         let nodeLoc = getNode(mousePos(document.querySelector("canvas"), e));
-        if (grid.nodes[nodeLoc.X][nodeLoc.Y].isEnabled()) {
-            grid.nodes[nodeLoc.X][nodeLoc.Y].setEnabled(false);
-            grid.drawNode(nodeLoc.X * grid.nodeSize, nodeLoc.Y * grid.nodeSize, 'red');
+        if (grid.getNode(nodeLoc).isEnabled()) {
+            grid.getNode(nodeLoc).setEnabled(false);
+            grid.drawNode(nodeLoc, 'red');
         }
     }
 });
